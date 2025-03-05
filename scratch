@@ -1,0 +1,109 @@
+//----------------------------------------------------------------------------------
+
+const a10 = {
+    b: {
+        val: {
+            name: 'Sarthak'
+        }
+    }
+}
+
+function getValueAtPath(obj, path) {
+    const newPath = path.split('.')
+    let str = obj;
+    for (const key of newPath) {
+        if (str[key] === undefined) {
+            return null;
+        }
+        str = str[key];
+    }
+    return str;
+}
+
+console.log(getValueAtPath(a10, 'b.val.name'))
+
+// --------------------------------------------------
+function getParseObjectString(str) {
+    try {
+        //const parsedObj=JSON.parse(str);
+        const newStr = str.trim();
+        const content = newStr.slice(1, -1);
+        const keyValuePair = content.split(',').map(item => {
+            const [key, value] = item.split(':');
+            return [key.replace(/['"]/g, ''), value.replace(/['"]/g, '')];
+        })
+        return Object.fromEntries(keyValuePair);
+    } catch {
+        return null;
+    }
+}
+
+console.log(getParseObjectString(`{a:'Acb'}`));
+console.log(getParseObjectString('{"a":"PQR","b":"XYZ"}'));
+//--------------------------------------------------------------
+
+const obj = {
+    add: {opr1: 4, opr2: 6}
+}
+
+// 10 * (10 + 20) * 50
+const exp = {
+    multiply: {
+        opr1: 10,
+        opr2: {
+            add: {
+                opr1: 10,
+                opr2: 20
+            }
+        },
+        opr3: 50
+    }
+}
+
+const multiAdd = {
+    add: {opr1: 4, opr2: {add: {opr1: 6, opr2: {add: {opr1: 8, opr2: 2}}}}}
+};
+
+function evaluateExp(obj) {
+    let ans = 0;
+
+    for (const operation in obj) {
+        const operands = obj[operation];
+        let operandList = [];
+
+        for (const key in operands) {
+            const value = operands[key];
+            if (typeof value === 'object') {
+                operandList.push(evaluateExp(value));
+            } else {
+                operandList.push(value);
+            }
+        }
+
+        switch (operation) {
+            case 'add':
+                ans = operandList.reduce((acc, curr) => acc + curr, 0);
+                break;
+            case 'subtract':
+                ans = operandList.reduce((acc, curr) => acc - curr);
+                break;
+            case 'multiply':
+                ans = operandList.reduce((acc, curr) => acc * curr, 1);
+                break;
+            case 'divide':
+                ans = operandList.reduce((acc, curr) => {
+                    if (curr === 0) return null;
+                    return acc / curr;
+                });
+                break;
+            default:
+                return "invalid operation";
+        }
+    }
+
+    return ans;
+}
+
+console.log(evaluateExp(obj));
+console.log(evaluateExp(exp));
+console.log(evaluateExp(multiAdd));
