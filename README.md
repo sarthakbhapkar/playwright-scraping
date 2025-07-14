@@ -1,4 +1,4 @@
-# 🕸️ Web Scraping Project using Playwright (Node.js)
+# 🕸️ Web Scraping using Playwright (Node.js)
 
 This project demonstrates advanced web scraping techniques across multiple websites using **Playwright** with both **JavaScript** and **TypeScript**. It is built with modularity, performance, and reusability in mind.
 
